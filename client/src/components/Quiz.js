@@ -5,17 +5,19 @@ import Questions from "./Questions";
 import { useSelector, useDispatch } from "react-redux";
 import { moveNextQuestion, movePrevQuestion } from "../hooks/FetchQuestion";
 import { PushAnswer } from "../hooks/setResult";
+import { Navigate } from "react-router-dom";
 
 export default function Quiz() {
   // const trace = useSelector((state) => state.questions.trace);
   const [check, setChecked] = useState(undefined);
-  const state = useSelector((state) => state);
+
+  const result = useSelector((state) => state.result.result);
   const { queue, trace } = useSelector((state) => state.questions);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(state);
+    console.log(result);
   });
 
   function onNext() {
@@ -24,11 +26,13 @@ export default function Quiz() {
     if (trace < queue.length) {
       dispatch(moveNextQuestion());
 
-      dispatch(PushAnswer(check));
+      if (result.length <= trace) {
+        dispatch(PushAnswer(check));
+      }
     }
   }
   function onPrev() {
-    console.log("On Prev Click");
+    // console.log("On Prev Click");
     if (trace > 0) {
       dispatch(movePrevQuestion());
     }
@@ -39,16 +43,33 @@ export default function Quiz() {
     setChecked(check);
   }
 
+  // finish test
+  if (result.length && result.length >= queue.length) {
+    return <Navigate to={"/result"} replace={true}></Navigate>;
+  }
+
   return (
     <div className="container">
       <h1 className="title text-light">Quiz Application</h1>
       {/* display questions */}
       <Questions onChecked={onChecked} />
 
-      <div className="grid">
+      {/* <div className="grid">
         <button className="btn prev" onClick={onPrev}>
           Prev
         </button>
+        <button className="btn next" onClick={onNext}>
+          Next
+        </button>
+      </div> */}
+      <div className="grid">
+        {trace > 0 ? (
+          <button className="btn prev" onClick={onPrev}>
+            Prev
+          </button>
+        ) : (
+          <div></div>
+        )}
         <button className="btn next" onClick={onNext}>
           Next
         </button>

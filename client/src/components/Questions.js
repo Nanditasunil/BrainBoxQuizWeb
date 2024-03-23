@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from "react";
 // import data from "../database/data";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // custom hooks
 import { useFetchQuestion } from "../hooks/FetchQuestion";
+// import { updateResultAction } from "../redux/result_reducer";
+import { updateResult } from "../hooks/setResult";
 
 export default function Questions({ onChecked }) {
   const [checked, setChecked] = useState(undefined);
+  const { trace } = useSelector((state) => state.questions);
+  const result = useSelector((state) => state.result.result);
+
   const [{ isLoading, apiData, serverError }] = useFetchQuestion();
   // const question = data[0];
 
   const questions = useSelector(
     (state) => state.questions.queue[state.questions.trace]
   );
-  const trace = useSelector((state) => state.questions.trace);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // console.log(questions);
-  });
+    // console.log({trace,checked});
+    dispatch(updateResult({ trace, checked }));
+  }, [checked]);
 
   // useEffect(() => {
   //   // console.log(question);
@@ -28,9 +35,10 @@ export default function Questions({ onChecked }) {
   // });
 
   function onSelect(i) {
-    // setChecked(true);
+    setChecked(i);
     // console.log(i);
     onChecked(i);
+    dispatch(updateResult({ trace, checked }));
   }
 
   if (isLoading) return <h3 className="text-light">isLoading</h3>;
@@ -53,7 +61,9 @@ export default function Questions({ onChecked }) {
             <label className="text-primary" htmlFor={`q${i}-option`}>
               {q}
             </label>
-            <div className="check "></div>
+            <div
+              className={`check ${result[trace] == i ? "checked" : ""}`}
+            ></div>
           </li>
         ))}
       </ul>
