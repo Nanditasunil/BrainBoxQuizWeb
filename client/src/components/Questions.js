@@ -5,12 +5,12 @@ export default function Questions() {
 
   const question = data[0];
   useEffect(() => {
-    console.log(question);
+    // console.log(question);
   });
 
   function onSelect() {
     // setChecked(true);
-    console.log("radio button changed ");
+    // console.log("radio button changed ");
   }
   return (
     <div className="questions">
