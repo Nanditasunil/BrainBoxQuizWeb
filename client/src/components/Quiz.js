@@ -16,9 +16,9 @@ export default function Quiz() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    console.log(result);
-  });
+  // useEffect(() => {
+  //   console.log(result);
+  // });
 
   function onNext() {
     console.log("On Next Click");
@@ -30,6 +30,8 @@ export default function Quiz() {
         dispatch(PushAnswer(check));
       }
     }
+
+    setChecked(undefined);
   }
   function onPrev() {
     // console.log("On Prev Click");
