@@ -5,6 +5,10 @@ import cors from "cors";
 import { config } from "dotenv";
 
 import router from "./router/route.js";
+
+// cimport connection file
+import connect from "./database/conn.js";
+
 const app = express();
 // const cors = require('cors');
 // app middleawares
@@ -18,7 +22,7 @@ const port = process.env.PORT || 8080;
 
 // routes
 
-app.use('/api',router)   // apis
+app.use("/api", router); // apis
 
 app.get("/", (req, res) => {
   try {
@@ -28,6 +32,18 @@ app.get("/", (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server connected to http://localhost:${port}`);
-});
+// start server when we have valid connection
+// calling connection
+connect()
+  .then(() => {
+    try {
+      app.listen(port, () => {
+        console.log(`Server connected to http://localhost:${port}`);
+      });
+    } catch (error) {
+      console.log("cannot connect to the server");
+    }
+  })
+  .catch((error) => {
+    console.log("invalid database connection");
+  });
