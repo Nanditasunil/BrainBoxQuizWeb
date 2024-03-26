@@ -12,6 +12,8 @@ import {
   flagResult,
 } from "../helper/helper";
 
+import { usePublishResult } from "../hooks/setResult";
+
 export default function Result() {
   const dispatch = useDispatch();
   const {
@@ -19,14 +21,25 @@ export default function Result() {
     result: { result, userId },
   } = useSelector((state) => state);
 
-  useEffect(() => {
-    console.log(flag);
-  });
+  // useEffect(() => {
+  //   console.log(flag);
+  // });
 
   const totalPoints = queue.length * 10;
   const attempts = attemps_Number(result);
   const earnPoints = earnPoints_Number(result, answers, 10);
   const flag = flagResult(totalPoints, earnPoints);
+
+  // backend
+  // store user result
+  usePublishResult({
+    result,
+    username: userId,
+    attempts,
+    points: earnPoints,
+    achived: flag ? "Passed" : "Failed",
+  });
+  // console.log({});
 
   function onRestart() {
     // console.log("on restart");
@@ -39,7 +52,7 @@ export default function Result() {
       <div className=" result flex-center">
         <div className="flex">
           <span>Username</span>
-          <span className="bold ">nandita</span>
+          <span className="bold ">{userId}</span>
         </div>
         <div className="flex">
           <span>Total quiz points:</span>

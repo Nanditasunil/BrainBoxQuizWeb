@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-
+import axios from "axios";
 export function attemps_Number(result) {
   return result.filter((r) => r !== undefined).length;
 }
@@ -21,4 +21,19 @@ export function flagResult(totalPoints, earnPoints) {
 export function CheckUserExists({ children }) {
   const auth = useSelector((state) => state.result.userId);
   return auth ? children : <Navigate to={"/"} replace={true}></Navigate>;
+}
+
+// get server data
+export async function getServerData(url, callback) {
+  const data = await (await axios.get(url))?.data;
+  // console.log(data);
+  return callback ? callback(data) : data;
+}
+
+// getServerData("http://localhost:5000/api/result");
+
+export async function postServerData(url, result, callback) {
+  const data = await (await axios.post(url, result))?.data;
+  // console.log(data);
+  return callback ? callback(data) : data;
 }
